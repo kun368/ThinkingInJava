@@ -3,11 +3,12 @@ package chapter5.T22;
 /**
  * Created by kun36 on 2016/12/18.
  */
-enum Type {
-    AA, BB, CC, DD, EE, GG;
-}
 
 public class Main {
+
+    enum Type {
+        AA, BB, CC, DD, EE, GG;
+    }
 
     static void show(Type type) {
         switch (type) {
