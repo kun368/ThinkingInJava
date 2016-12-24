@@ -10,4 +10,4 @@ public class Main {
         System.out.println(Arrays.toString(args));
     }
 }
-//java chapter5.T20.Main "abc" "de" fdsfas
+//java chapter5.T18.Main "abc" "de" fdsfas
