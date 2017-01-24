@@ -47,21 +47,21 @@
       "/>
 
     <target name="run" description="Compiles and runs all examples">
-        <delete file="errors.txt"/>
+        <delete path="errors.txt"/>
         <subant>
             <filelist refid="buildfiles"/>
         </subant>
-        <available file="errors.txt" property="errors"/>
+        <available path="errors.txt" property="errors"/>
         <antcall target="finish"/>
     </target>
 
     <target name="build" description="Compiles all examples">
         <fail message="J2SE5 required" unless="version1.5"/>
-        <delete file="errors.txt"/>
+        <delete path="errors.txt"/>
         <subant target="build">
             <filelist refid="buildfiles"/>
         </subant>
-        <available file="errors.txt" property="errors"/>
+        <available path="errors.txt" property="errors"/>
         <antcall target="finish"/>
     </target>
 

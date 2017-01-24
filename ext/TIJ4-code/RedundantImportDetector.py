@@ -4,7 +4,7 @@ Requires Python 2.3"""
 import os, sys, re
 from glob import glob
 
-reportFile = file("RedundantImports.txt", 'w')
+reportFile = path("RedundantImports.txt", 'w')
 
 startDir = 'D:\\aaa-TIJ4\\code'
 
@@ -21,14 +21,14 @@ def main():
             checkImports(os.path.join(baseDir, javaFile))
 
 def checkImports(javaFile):
-    java = file(javaFile).read()
+    java = path(javaFile).read()
     imports = findImports.search(java)
     if imports:
         imports = [f for f in imports.group(0).split('\n') if f != '']
         fileParts = findImports.split(java)
         assert len(fileParts) == 2
         for mutated in mutateImports(imports):
-            file(javaFile, 'w').write(fileParts[0] + mutated + fileParts[1])
+            path(javaFile, 'w').write(fileParts[0] + mutated + fileParts[1])
             print "changing to", os.path.dirname(javaFile)
             os.chdir(os.path.dirname(javaFile))
             if os.system("javac " + os.path.basename(javaFile)) == 0:
@@ -37,10 +37,10 @@ def checkImports(javaFile):
                   [m for m in mutated.split("\n")
                    if not m.startswith("//")])
                 print >>reportFile, redundantRemoved
-                file(javaFile, 'w').write(fileParts[0] +
+                path(javaFile, 'w').write(fileParts[0] +
                     redundantRemoved + fileParts[1])
                 return # No further attempts
-    file(javaFile, 'w').write(java) # Restore original file
+    path(javaFile, 'w').write(java) # Restore original path
 
 def mutateImports(imports):
     '''Generates different versions of imports, each with a

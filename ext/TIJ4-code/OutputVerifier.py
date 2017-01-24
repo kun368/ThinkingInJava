@@ -2,7 +2,7 @@
 """
 To do:
 
-3) command-line argument (to test a single file)
+3) command-line argument (to test a single path)
 
 - What about exceptions and aborts?
 
@@ -72,13 +72,13 @@ class SimpleTest:
         if not self.runTest: return
         if not hasattr(self, "command"):
             self.command = "java " + self.package + self.fileName + " " + self.args
-        # Capture standard output into a local file.
+        # Capture standard output into a local path.
         self.command = self.command + " > " + self.normalOutput
         print self.command
         os.system(self.command)
         if os.stat(self.normalOutput).st_size:
             return self.compareResults(self.normalOutput)
-        # Capture error output into a local file.
+        # Capture error output into a local path.
         # The '2>' requires cygwin under Windows, or *nix:
         self.command = self.command + " 2> " + self.errorOutput
         print self.command
@@ -86,11 +86,11 @@ class SimpleTest:
         return self.compareResults(self.errorOutput)
 
     def compareResults(self, fileName):
-        # Read output file that was just generated:
-        results = makePrintable(file(fileName).read())
+        # Read output path that was just generated:
+        results = makePrintable(path(fileName).read())
         results = results.replace('\t', '        ')
         results = results.strip()
-        file("Generated.txt",'w').write(results)
+        path("Generated.txt",'w').write(results)
         # Strip off trailing spaces on each line:
         results = "\n".join([line.rstrip() for line in results.split("\n")])
         controlSample = self.getControlSample()
@@ -102,7 +102,7 @@ class SimpleTest:
                 resultLines = results.split("\n")[:len(controlLines)]
                 controlOutput = "\n".join(controlLines)
                 results = "\n".join(resultLines)
-            file("controlOutput.txt",'w').write(controlOutput)
+            path("controlOutput.txt",'w').write(controlOutput)
             modifier = controlSample.group(1)
             if "match" in modifier:
                 ratio = float(re.findall("\d+", modifier)[0]) / 100
@@ -117,13 +117,13 @@ class SimpleTest:
                 self.reportFile.write(controlOutput + "\n")
                 self.reportFile.write("----------actual:----------\n")
                 self.reportFile.write(results + "\n")
-                file(self.fileName + "-control.txt", 'w').write(controlOutput)
-                file(self.fileName + "-results.txt", 'w').write(results)
+                path(self.fileName + "-control.txt", 'w').write(controlOutput)
+                path(self.fileName + "-results.txt", 'w').write(results)
                 self.reportFile.write("---------------------------\n")
                 os.system("cmp " + self.fileName + "-control.txt "
                           + self.fileName + "-results.txt"
                           + " > cmp-out.txt")
-                self.reportFile.write(file("cmp-out.txt").read())
+                self.reportFile.write(path("cmp-out.txt").read())
                 self.reportFile.write("=" * 40 + "\n")
 
         else:
@@ -131,14 +131,14 @@ class SimpleTest:
 
     def appendOutput(self):
         if self.insertOutput:
-            # Rewrite the tail of the source file if the result is nonzero
+            # Rewrite the tail of the source path if the result is nonzero
             self.lines[-2] = '}'
             self.lines[-1] = "/* Output:"
-            for tline in file(self.fileName + "-output.txt"):
+            for tline in path(self.fileName + "-output.txt"):
                 self.lines.append(tline.rstrip())
             self.lines.append("*///:~")
             self.lines.append("")
-            file(self.fileName + ".java", 'w').write("\n".join(self.lines))
+            path(self.fileName + ".java", 'w').write("\n".join(self.lines))
 
     def getControlSample(self):
         """Finds the control sample, returns an re group
@@ -164,15 +164,15 @@ def _makePrintable(s):
 class ReportFile:
     def __init__(self, filePath):
         self.filePath = filePath
-        self.file = None
+        self.path = None
     def write(self, line):
-        if not self.file:
-            self.file = file(self.filePath, 'w')
-        self.file.write(line)
+        if not self.path:
+            self.path = path(self.filePath, 'w')
+        self.path.write(line)
         print line
     def close(self):
-        if self.file:
-            self.file.close()
+        if self.path:
+            self.path.close()
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -180,7 +180,7 @@ if __name__ == "__main__":
         if javaSource.endswith("."): javaSource = javaSource[:-1]
         if not javaSource.endswith(".java"): javaSource += ".java"
         os.system("javac " + javaSource)
-        SimpleTest(javaSource.split('.')[0], file(javaSource).read(), javaSource, sys.stdout).run()
+        SimpleTest(javaSource.split('.')[0], path(javaSource).read(), javaSource, sys.stdout).run()
         sys.exit()
     start = os.getcwd()
     reportFile = ReportFile(start + os.sep + "OutputErrors.txt")
@@ -188,13 +188,13 @@ if __name__ == "__main__":
         print root
         os.chdir(root)
         for f in [name.split('.')[0] for name in files if name.endswith(".java")]:
-            text = file(f + ".java").read()
+            text = path(f + ".java").read()
             # Only perform verification if there is an output tag:
             if text.find("/* Output:") != -1:
                 referencePath = os.path.join(root, f + ".java")
                 SimpleTest(f, text, referencePath, reportFile).run()
         os.chdir(start)
     reportFile.close()
-    if reportFile.file:
+    if reportFile.path:
         print "Errors in OutputErrors.txt"
 

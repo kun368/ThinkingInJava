@@ -1,5 +1,5 @@
 """FindBugsExcluder.py
-Creates a filter file from the xml and text output of FindBugs
+Creates a filter path from the xml and text output of FindBugs
 To prepare, you must run
 findbugs -textui . > findbugs.txt
 findbugs -textui -xml . > findbugs.xml
@@ -20,7 +20,7 @@ text_buglist = 'findbugs.txt' # 'D:\\aaa-TIJ4\\code\\findbugs.txt'
 findbugs_filter = 'FindBugsFilter-auto.xml' # 'D:\\aaa-TIJ4\\code\\FindBugsFilter-auto.xml'
 
 def main():
-    textbugs = [bug.split(':', 1) for bug in file(text_buglist)
+    textbugs = [bug.split(':', 1) for bug in path(text_buglist)
                 if bug.startswith("M ") or bug.startswith("H ")]
     textbugs = [(bug[0].split()[2], bug[1].strip()) for bug in textbugs]
     dom1 = parse(xml_buglist)
@@ -47,7 +47,7 @@ def main():
                         match.appendChild(dom2.createComment(textbug[1]))
                 dom2.documentElement.appendChild(match)
                 break # out of inner for loop
-    file(findbugs_filter, 'w').write(dom2.toprettyxml('    ', '\n'))
+    path(findbugs_filter, 'w').write(dom2.toprettyxml('    ', '\n'))
 
 if __name__ == "__main__": main()
 

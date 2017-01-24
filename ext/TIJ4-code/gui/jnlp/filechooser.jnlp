@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jnlp spec="1.0+"
-      codebase="file:C:/AAA-TIJ4/code/gui/jnlp"
+      codebase="path:C:/AAA-TIJ4/code/gui/jnlp"
       href="filechooser.jnlp">
     <information>
         <title>FileChooser demo application</title>
@@ -9,7 +9,7 @@
             Jnlp File chooser Application
         </description>
         <description kind="short">
-            Demonstrates opening, reading and writing a text file
+            Demonstrates opening, reading and writing a text path
         </description>
         <icon href="mindview.gif"/>
         <offline-allowed/>

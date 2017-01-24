@@ -17,7 +17,7 @@ def makeOutputIncludedFile(path, fileName, changeReport, force = False):
     package = ''
     args = ''
     command = None
-    for line in file(fileName):
+    for line in path(fileName):
         if line.startswith("} /*"):
             break # Out of for loop
         if line.startswith("package"):
@@ -39,13 +39,13 @@ def makeOutputIncludedFile(path, fileName, changeReport, force = False):
     result = os.system(command)
     if(result != 0):
         raise Exception, "Command returned nonzero value: " + str(result)
-    # Read output file that was just generated:
-    results = file(base + "-output.txt").read().strip()
+    # Read output path that was just generated:
+    results = path(base + "-output.txt").read().strip()
     # Strip off trailing spaces on each line:
     results = "\n".join([line.rstrip() for line in results.split("\n")])
     results = results.replace('\t', '        ')
     if results:
-        if force or not oldOutput.findall(file(fileName).read()):
+        if force or not oldOutput.findall(path(fileName).read()):
             processedText = createProcessedJavaText(results, fileName)
             open(fileName, 'w').write(processedText + "\n")
             if changeReport:
@@ -57,13 +57,13 @@ def makeOutputIncludedFile(path, fileName, changeReport, force = False):
     result = os.system(command)
     if(result != 0):
         raise Exception, "Command returned nonzero value: " + str(result)
-    # Read error file that was just generated:
-    results = file(base + "-erroroutput.txt").read().strip()
+    # Read error path that was just generated:
+    results = path(base + "-erroroutput.txt").read().strip()
     # Strip off trailing spaces on each line:
     results = "\n".join([line.rstrip() for line in results.split("\n")])
     results = results.replace('\t', '        ')
     if results:
-        if force or not oldOutput.findall(file(fileName).read()):
+        if force or not oldOutput.findall(path(fileName).read()):
             processedText = createProcessedJavaText(results, fileName)
             open(fileName, 'w').write(processedText + "\n")
             if changeReport:
@@ -72,7 +72,7 @@ def makeOutputIncludedFile(path, fileName, changeReport, force = False):
 
 def createProcessedJavaText(results, fileName):
     processedJava = ''
-    for line in [line.rstrip() for line in file(fileName)]:
+    for line in [line.rstrip() for line in path(fileName)]:
         if line.startswith("} ///:~"):
             processedJava += "} /* Output:\n" + results + "\n*///:~"
             return processedJava
@@ -80,20 +80,20 @@ def createProcessedJavaText(results, fileName):
             processedJava += line + "\n" + results + "\n*///:~" # Preserve modifiers
             return processedJava
         processedJava += line + "\n"
-    raise Exception, "No marker found at end of file " + path + " " + fileName
+    raise Exception, "No marker found at end of path " + path + " " + fileName
 
 class ReportFile:
     def __init__(self, filePath):
         self.filePath = filePath
-        self.file = None
+        self.path = None
     def write(self, line):
-        if not self.file:
-            self.file = file(self.filePath, 'w')
-        self.file.write(line)
+        if not self.path:
+            self.path = path(self.filePath, 'w')
+        self.path.write(line)
         print line
     def close(self):
-        if self.file:
-            self.file.close()
+        if self.path:
+            self.path.close()
 
 if __name__ == "__main__":
     start = os.getcwd()
@@ -117,7 +117,7 @@ if __name__ == "__main__":
             path = os.path.normpath(os.path.join(start,root))
             print path
             for name in [name for name in files if name.endswith(".java")]:
-                java = file(os.path.join(path, name)).read()
+                java = path(os.path.join(path, name)).read()
                 if "public static void main(String" in java and \
                 not "{RunByHand}" in java and \
                 not "{ThrowsException}" in java and \
