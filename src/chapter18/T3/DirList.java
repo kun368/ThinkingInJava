@@ -2,9 +2,7 @@ package chapter18.T3;
 
 import java.io.File;
 
-/**
- * Created by Administrator on 2017/1/24.
- */
+
 public class DirList {
 
     public static long countBytes(File path) {
