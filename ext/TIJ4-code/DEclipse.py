@@ -10,9 +10,9 @@ You must have Python 2.3 installed to run this program. See www.python.org.
 import os
 
 for path, dirs, files in os.walk('.'):
-    for path in files:
-        if path.endswith(".java"):
-            filepath = path + os.sep + path
+    for file in files:
+        if file.endswith(".java"):
+            filepath = path + os.sep + file
             code = open(filepath).readlines()
             found = False
             for n, line in enumerate(code):

@@ -15,9 +15,9 @@ import os
 os.remove("reusing/Lisa.java");
 
 for path, dirs, files in os.walk('.'):
-    for path in files:
-        if path.endswith(".java"):
-            filepath = path + os.sep + path
+    for file in files:
+        if file.endswith(".java"):
+            filepath = path + os.sep + file
             firstLine = open(filepath).readline().strip()
             tagPath = firstLine.split()[1]
             tagPath = ".".join(tagPath.split('/')[:-1])

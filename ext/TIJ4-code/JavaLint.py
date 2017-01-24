@@ -9,8 +9,8 @@ outputfile = "JavaLint.txt"
 
 javadirs = []
 for path, dirs, files in os.walk('.'):
-    for path in files:
-        if path.endswith(".java"):
+    for file in files:
+        if file.endswith(".java"):
             javadirs.append(path)
             break
 
